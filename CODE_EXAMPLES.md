@@ -96,7 +96,8 @@ Use standard TV remote for control.
 IRrecv irrecv(IR_PIN);
 decode_results results;
 
-// Define your remote codes
+// Define your remote codes (THESE ARE EXAMPLES - use IRremote examples to find YOUR remote's codes)
+// To find your codes: Upload IRrecvDemo sketch, press buttons, note the hex codes shown
 #define REMOTE_FORWARD 0xFF18E7
 #define REMOTE_BACKWARD 0xFF4AB5
 #define REMOTE_LEFT 0xFF10EF

@@ -233,7 +233,8 @@ int getDistance() {
   delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
   
-  long duration = pulseIn(ECHO_PIN, HIGH, 30000UL);  // Timeout after 30ms (30000 microseconds)
+  // Timeout after 30ms (30000 microseconds) - allows measuring up to ~5m distance
+  long duration = pulseIn(ECHO_PIN, HIGH, 30000UL);
   
   if (duration == 0) {
     return -1;  // No echo received
