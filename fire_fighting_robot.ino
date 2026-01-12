@@ -36,6 +36,8 @@
 #define SAFE_DISTANCE 20       // Safe distance from obstacles in cm
 #define MOTOR_SPEED 200        // PWM value for motor speed (0-255)
 #define PUMP_DURATION 3000     // Time to run pump in milliseconds
+#define SOUND_SPEED_CM_US 0.034  // Speed of sound in cm/microsecond
+#define DEBUG_INTERVAL 1000    // Debug output interval in milliseconds
 
 // States
 enum RobotState {
@@ -47,6 +49,7 @@ enum RobotState {
 
 RobotState currentState = SEARCHING;
 unsigned long pumpStartTime = 0;
+unsigned long lastDebugTime = 0;  // Track last debug output time
 
 void setup() {
   // Initialize Serial for debugging
@@ -61,10 +64,8 @@ void setup() {
   pinMode(MOTOR_ENABLE_LEFT, OUTPUT);
   pinMode(MOTOR_ENABLE_RIGHT, OUTPUT);
   
-  // Flame sensor pins
-  pinMode(FLAME_SENSOR_LEFT, INPUT);
-  pinMode(FLAME_SENSOR_CENTER, INPUT);
-  pinMode(FLAME_SENSOR_RIGHT, INPUT);
+  // Flame sensor pins (analog pins auto-configure, but explicit for clarity)
+  // pinMode() not required for analog inputs, but shown for documentation
   
   // Water pump pin
   pinMode(WATER_PUMP, OUTPUT);
@@ -94,8 +95,8 @@ void loop() {
   bool fireDetectedRight = flameRight < FLAME_THRESHOLD;
   bool fireDetected = fireDetectedLeft || fireDetectedCenter || fireDetectedRight;
   
-  // Debug output
-  if (Serial.available() == 0) {  // Only print when no serial input
+  // Debug output (throttled to avoid flooding Serial Monitor)
+  if (millis() - lastDebugTime >= DEBUG_INTERVAL) {
     Serial.print("Sensors - L:");
     Serial.print(flameLeft);
     Serial.print(" C:");
@@ -104,6 +105,7 @@ void loop() {
     Serial.print(flameRight);
     Serial.print(" | Fire: ");
     Serial.println(fireDetected ? "YES" : "NO");
+    lastDebugTime = millis();
   }
   
   // State machine
@@ -231,12 +233,12 @@ int getDistance() {
   delayMicroseconds(10);
   digitalWrite(TRIG_PIN, LOW);
   
-  long duration = pulseIn(ECHO_PIN, HIGH, 30000);  // Timeout after 30ms
+  long duration = pulseIn(ECHO_PIN, HIGH, 30000UL);  // Timeout after 30ms (30000 microseconds)
   
   if (duration == 0) {
     return -1;  // No echo received
   }
   
-  int distance = duration * 0.034 / 2;  // Convert to cm
+  int distance = duration * SOUND_SPEED_CM_US / 2;  // Convert to cm (divide by 2 for round trip)
   return distance;
 }

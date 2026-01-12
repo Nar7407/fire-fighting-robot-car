@@ -90,7 +90,9 @@ This comprehensive guide helps you diagnose and fix common issues with your fire
 
 **Prevention:**
 ```cpp
-// Add to your code for battery monitoring
+// Add to your main code for battery monitoring
+// Requires functions from main fire_fighting_robot.ino
+
 #define BATTERY_PIN A3
 #define LOW_BATTERY_THRESHOLD 650  // Adjust based on your voltage divider
 
@@ -98,11 +100,14 @@ void checkBattery() {
   int batteryReading = analogRead(BATTERY_PIN);
   if (batteryReading < LOW_BATTERY_THRESHOLD) {
     Serial.println("WARNING: Low battery!");
-    // Stop operations for safety
-    stopMotors();
-    digitalWrite(WATER_PUMP, LOW);
+    // Stop operations for safety (using functions from main code)
+    // Call your stopMotors() function
+    // Set WATER_PUMP pin LOW
+    currentState = STOPPED;
   }
 }
+
+// Call this function periodically in your main loop()
 ```
 
 ## 🚗 Motor Control Issues
