@@ -1,6 +1,6 @@
 MIT License
 
-Copyright (c) 2026 Nar7407
+Copyright (c) 2026 Fire-Fighting Robot Car Project
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
@@ -13,9 +13,34 @@ The above copyright notice and this permission notice shall be included in all
 copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHOR OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+---
+
+EDUCATIONAL USE NOTICE:
+
+This project is designed for educational purposes and student projects.
+When using this project:
+
+1. Always follow fire safety protocols
+2. Supervise demonstrations involving fire
+3. Use appropriate fire suppression equipment
+4. Test in controlled environments only
+5. Comply with local safety regulations
+6. Get proper permissions for demonstrations
+
+The authors and contributors are not responsible for:
+- Property damage
+- Personal injury
+- Misuse of the project
+- Violations of safety protocols
+- Any damages resulting from use of this software/hardware
+
+This is a proof-of-concept educational project. For real-world fire
+suppression applications, please consult professional fire safety experts
+and use certified equipment.

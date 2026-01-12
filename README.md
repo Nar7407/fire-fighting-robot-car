@@ -1,210 +1,233 @@
-# Fire Fighting Robot Car
+# Fire-Fighting Robot Car 🚒🤖
 
-An intelligent autonomous and remotely controlled robot car designed to detect and extinguish fires. Supports multiple platforms including Arduino, ESP32, and Raspberry Pi.
+A low-cost autonomous fire-fighting robot built with Arduino. This robot car can detect fire using flame sensors, navigate towards it, and automatically spray water to extinguish the flames.
 
-## Features
+## 🎯 Features
 
-- 🔥 Autonomous fire detection and navigation
-- 🎮 Remote control capability (Bluetooth/WiFi)
-- 🚗 Obstacle avoidance using ultrasonic sensors
-- 💧 Automatic fire extinguishing mechanism
-- 📡 Multi-platform support (Arduino/ESP32/Raspberry Pi)
-- 🔋 Battery monitoring
-- 📊 Real-time status feedback
+- **Autonomous Fire Detection**: Uses IR flame sensors to detect fire from multiple angles
+- **Smart Navigation**: Moves towards detected fire and avoids obstacles
+- **Automatic Water Spray**: Activates water pump when close to fire source
+- **Emergency Stop**: Built-in safety mechanisms
+- **Search Mode**: Rotates to scan environment when no fire is detected
 
-## Hardware Requirements
+## 🔧 Components Required
 
-### Core Components
-- **Microcontroller**: Arduino Uno/Mega/Nano OR ESP32 OR Raspberry Pi
-- **Motor Driver**: L298N or L293D
-- **Motors**: 4x DC motors with wheels (or 2x motors for basic version)
-- **Flame Sensors**: 3x flame sensor modules (left, center, right)
-- **Ultrasonic Sensor**: HC-SR04 (for obstacle detection)
-- **Water Pump**: 5V mini water pump with relay module
-- **Servo Motor**: SG90 (for sensor scanning)
-- **Bluetooth Module**: HC-05 (for Arduino) or built-in (ESP32/Pi)
-- **Power Supply**: 7.4V LiPo battery or 6x AA batteries
-- **Buzzer**: Active buzzer for alerts
-- **LEDs**: Status indicator LEDs
+### Electronic Components
+1. **Arduino Uno** (or compatible board) - 1 unit
+2. **L298N Motor Driver Module** - 1 unit
+3. **IR Flame Sensors** - 3 units (left, center, right)
+4. **DC Motors** - 2 units (for wheels)
+5. **Water Pump** (mini submersible pump 3-6V) - 1 unit
+6. **Ultrasonic Sensor HC-SR04** - 1 unit (for obstacle detection)
+7. **Relay Module** (5V, single channel) - 1 unit (for pump control)
+8. **Wheels** - 2 units (driven) + 1 castor wheel
+9. **Li-ion Battery Pack** (7.4V or 11.1V, 2200mAh) - 1 unit
+10. **Water Container** (small plastic bottle or tank) - 1 unit
+11. **Plastic Tubing/Pipe** - suitable length
+12. **Robot Chassis** - 1 unit
+13. **Jumper Wires** - as needed
+14. **Breadboard** (optional for prototyping) - 1 unit
 
-### Optional Components
-- IR sensors for line following
-- Temperature sensor (DHT11/DHT22)
-- Camera module (for Raspberry Pi version)
-- LCD display (16x2 or OLED)
+### Tools Required
+- Soldering iron and solder
+- Wire stripper
+- Screwdriver set
+- Hot glue gun
+- Multimeter (for testing)
 
-## Pin Configuration
+## 📐 Pin Configuration
 
-### Arduino Uno/Nano
-```
-Motor Driver (L298N):
-- IN1 → Pin 5
-- IN2 → Pin 6
-- IN3 → Pin 9
-- IN4 → Pin 10
-- ENA → Pin 3 (PWM)
-- ENB → Pin 11 (PWM)
+| Component | Arduino Pin | Description |
+|-----------|-------------|-------------|
+| Motor Left Forward | D5 | Left motor forward control |
+| Motor Left Backward | D6 | Left motor backward control |
+| Motor Right Forward | D9 | Right motor forward control |
+| Motor Right Backward | D10 | Right motor backward control |
+| Motor Enable Left | D11 (PWM) | Left motor speed control |
+| Motor Enable Right | D3 (PWM) | Right motor speed control |
+| Flame Sensor Left | A0 | Left flame sensor input |
+| Flame Sensor Center | A1 | Center flame sensor input |
+| Flame Sensor Right | A2 | Right flame sensor input |
+| Water Pump | D7 | Pump relay control |
+| Ultrasonic Trig | D12 | Ultrasonic sensor trigger |
+| Ultrasonic Echo | D13 | Ultrasonic sensor echo |
 
-Flame Sensors:
-- Left → A0
-- Center → A1
-- Right → A2
+## 🔌 Wiring Instructions
 
-Ultrasonic Sensor (HC-SR04):
-- TRIG → Pin 12
-- ECHO → Pin 13
+### Motor Driver (L298N) Connections
+1. Connect Arduino D5 → IN1 (Left motor forward)
+2. Connect Arduino D6 → IN2 (Left motor backward)
+3. Connect Arduino D9 → IN3 (Right motor forward)
+4. Connect Arduino D10 → IN4 (Right motor backward)
+5. Connect Arduino D11 → ENA (Left motor enable/speed)
+6. Connect Arduino D3 → ENB (Right motor enable/speed)
+7. Connect left motor to OUT1 and OUT2
+8. Connect right motor to OUT3 and OUT4
+9. Connect battery positive to 12V input
+10. Connect battery negative and Arduino GND to GND
 
-Water Pump Relay → Pin 7
-Servo Motor → Pin 4
-Buzzer → Pin 8
-Bluetooth (HC-05):
-- TX → Pin 0 (RX)
-- RX → Pin 1 (TX)
-```
+### Flame Sensor Connections
+1. **Left Sensor**: VCC → 5V, GND → GND, OUT → A0
+2. **Center Sensor**: VCC → 5V, GND → GND, OUT → A1
+3. **Right Sensor**: VCC → 5V, GND → GND, OUT → A2
 
-### ESP32
-```
-Motor Driver:
-- IN1 → GPIO 16
-- IN2 → GPIO 17
-- IN3 → GPIO 18
-- IN4 → GPIO 19
-- ENA → GPIO 25 (PWM)
-- ENB → GPIO 26 (PWM)
+### Water Pump with Relay
+1. Connect Arduino D7 → Relay IN
+2. Connect Relay VCC → 5V
+3. Connect Relay GND → GND
+4. Connect pump to relay NO (Normally Open) and COM terminals
+5. Connect pump power supply through relay
 
-Flame Sensors:
-- Left → GPIO 34
-- Center → GPIO 35
-- Right → GPIO 32
+### Ultrasonic Sensor (HC-SR04)
+1. VCC → 5V
+2. GND → GND
+3. TRIG → D12
+4. ECHO → D13
 
-Ultrasonic:
-- TRIG → GPIO 5
-- ECHO → GPIO 18
+### Power Supply
+- Arduino: Powered via USB or VIN (7-12V from battery)
+- Motors: Powered from L298N via battery (7.4V or 11.1V)
+- Sensors and Pump: 5V from Arduino
 
-Water Pump → GPIO 27
-Servo → GPIO 13
-Buzzer → GPIO 14
-```
+## 🚀 Installation & Setup
 
-## Software Setup
+### 1. Hardware Assembly
+1. Mount motors on the robot chassis
+2. Attach wheels to motors
+3. Install castor wheel at the front or back
+4. Mount Arduino and motor driver on chassis
+5. Position flame sensors at the front (left, center, right)
+6. Secure water tank on chassis
+7. Connect pump to tank with tubing
+8. Position nozzle/pipe pointing forward
+9. Mount ultrasonic sensor at the front
 
-### Arduino IDE Setup
-1. Install Arduino IDE from [arduino.cc](https://www.arduino.cc)
-2. Install required libraries:
-   - Servo library (built-in)
-   - NewPing library (for ultrasonic)
-3. Open `arduino/fire_fighting_robot.ino`
-4. Select your board and port
-5. Upload the code
+### 2. Software Setup
+1. Install [Arduino IDE](https://www.arduino.cc/en/software)
+2. Clone or download this repository
+3. Open `fire_fighting_robot.ino` in Arduino IDE
+4. Select your Arduino board: Tools → Board → Arduino Uno
+5. Select the correct port: Tools → Port → (your Arduino port)
+6. Click Upload button to flash the code
 
-### ESP32 Setup
-1. Install Arduino IDE
-2. Add ESP32 board support:
-   - Go to File → Preferences
-   - Add to Additional Board Manager URLs: `https://dl.espressif.com/dl/package_esp32_index.json`
-3. Install ESP32 board from Board Manager
-4. Install libraries:
-   - ESP32Servo
-   - NewPing
-5. Open `esp32/esp32_fire_fighter.ino`
-6. Select ESP32 board and upload
+### 3. Calibration
+1. **Flame Sensors**: Adjust the sensitivity potentiometer on each sensor
+   - Test with a candle or lighter
+   - Sensor LED should light up when fire is detected
+   - Adjust `FLAME_THRESHOLD` in code if needed (default: 512)
+2. **Motor Speed**: Adjust `MOTOR_SPEED` (0-255) for optimal speed
+3. **Safe Distance**: Modify `SAFE_DISTANCE` based on your robot size
+4. **Pump Duration**: Adjust `PUMP_DURATION` based on pump flow rate
 
-### Raspberry Pi Setup
-1. Install Raspbian OS
-2. Install Python dependencies:
-   ```bash
-   pip3 install -r requirements.txt
-   ```
-3. Enable hardware interfaces (I2C, SPI, GPIO)
-4. Run the code:
-   ```bash
-   python3 raspberry_pi/fire_fighter.py
-   ```
+## 💻 How It Works
 
-## Operation Modes
+### State Machine Logic
+The robot operates in four states:
 
-### 1. Autonomous Mode
-- Robot continuously scans for fire using flame sensors
-- Navigates towards detected fire source
-- Avoids obstacles automatically
-- Activates water pump when close to fire
-- Returns to patrol mode after extinguishing
+1. **SEARCHING**: Rotates slowly to scan for fire
+   - When fire is detected → switches to APPROACHING_FIRE
 
-### 2. Remote Control Mode
-- Control via Bluetooth or WiFi
-- Manual direction control (Forward, Backward, Left, Right)
-- Manual pump activation
-- Switch between manual and autonomous mode
+2. **APPROACHING_FIRE**: Navigates towards the fire source
+   - Fire on left → turns left
+   - Fire on right → turns right
+   - Fire ahead → moves forward
+   - Close enough (< SAFE_DISTANCE) → switches to EXTINGUISHING
 
-## Remote Control Commands
+3. **EXTINGUISHING**: Stops and activates water pump
+   - Runs pump for specified duration
+   - Re-checks if fire is extinguished
+   - If extinguished → returns to SEARCHING
+   - If still burning → continues extinguishing
 
-### Bluetooth Commands (Arduino/ESP32)
-- `F` - Forward
-- `B` - Backward
-- `L` - Left
-- `R` - Right
-- `S` - Stop
-- `W` - Activate water pump
-- `A` - Toggle autonomous mode
-- `M` - Manual mode
+4. **STOPPED**: Emergency stop state
 
-## Circuit Diagrams
+### Fire Detection
+- Three IR flame sensors provide wide detection coverage
+- Analog readings below threshold indicate fire presence
+- Lower analog value = stronger fire signal
 
-See `docs/circuit_diagram.md` for detailed wiring instructions and diagrams.
+### Navigation
+- Motors controlled via L298N driver with PWM speed control
+- Ultrasonic sensor prevents collision with obstacles
+- Differential steering for precise turning
 
-## Configuration
+## 🎮 Usage
 
-Edit `config.h` (Arduino/ESP32) or `config.py` (Raspberry Pi) to customize:
-- Sensor thresholds
-- Motor speeds
-- Pump duration
-- Detection ranges
-- Pin assignments
+1. Fill the water tank
+2. Power on the robot
+3. Place robot in open area
+4. Robot will start in SEARCHING mode
+5. When fire is detected, robot automatically approaches and extinguishes it
+6. Monitor via Serial Monitor (9600 baud) for debugging
 
-## Troubleshooting
+## 🔍 Troubleshooting
 
-### Robot not moving
-- Check motor driver connections
-- Verify power supply voltage
-- Test motors individually
+| Problem | Solution |
+|---------|----------|
+| Robot doesn't move | Check motor connections and power supply |
+| Fire not detected | Adjust flame sensor sensitivity; check wiring |
+| Pump doesn't activate | Verify relay connections; check pump power |
+| Robot turns wrong way | Swap motor wires or adjust code logic |
+| Sensors too sensitive | Increase FLAME_THRESHOLD value |
+| Motors too slow/fast | Adjust MOTOR_SPEED value (0-255) |
 
-### Flame not detected
-- Adjust flame sensor sensitivity (potentiometer on sensor)
-- Check sensor threshold values in config
-- Ensure sensors face forward
+## ⚠️ Safety Precautions
 
-### Bluetooth not connecting
-- Check baud rate (default: 9600)
-- Verify HC-05 wiring
-- Pair device before connecting
+1. Always supervise the robot during operation
+2. Use only small, controlled fires for testing
+3. Keep fire extinguisher nearby during tests
+4. Ensure adequate water in tank before operation
+5. Test in open area away from flammable materials
+6. Check all electrical connections before powering on
+7. Use proper battery management and charging
 
-## Safety Precautions
+## 🔧 Customization Options
 
-⚠️ **Important Safety Notes**:
-- Always test in controlled environment
-- Use appropriate fire extinguishing medium (water for paper/wood only)
-- Keep battery charged and monitor temperature
-- Supervise robot during operation
-- Not suitable for large fires or electrical fires
+### Code Modifications
+- Adjust sensitivity thresholds
+- Modify search patterns
+- Change pump activation logic
+- Add remote control capability
+- Implement multiple fire detection
 
-## Contributing
+### Hardware Upgrades
+- Add camera for visual feedback
+- Use servo for directional water spray
+- Implement wireless communication (Bluetooth/WiFi)
+- Add temperature sensors
+- Include buzzer for alerts
+- Add LED indicators
 
-Feel free to fork this project and submit pull requests for improvements!
+## 📊 Technical Specifications
 
-## License
+- **Operating Voltage**: 7.4V - 11.1V
+- **Motor Speed**: Adjustable via PWM (0-255)
+- **Fire Detection Range**: 0.5m - 2m (depends on sensor model)
+- **Water Tank Capacity**: 200-500ml (depends on container)
+- **Pump Flow Rate**: ~2L/min (typical mini pump)
+- **Weight**: ~500g - 1kg (depends on components)
+- **Dimensions**: Varies based on chassis (typical: 15cm x 12cm x 10cm)
 
-MIT License - Feel free to use and modify for your projects.
+## 📝 License
 
-## Author
+This project is open-source and available for educational purposes.
 
-Nar7407
+## 🤝 Contributing
 
-## Acknowledgments
+Contributions are welcome! Feel free to:
+- Report bugs
+- Suggest features
+- Submit pull requests
+- Share improvements
 
-- Arduino community
-- ESP32 development resources
-- Robotics enthusiasts worldwide
+## 📧 Contact
+
+For questions or suggestions, please open an issue on GitHub.
+
+## 🌟 Acknowledgments
+
+This project is designed for student and lab projects in India, focusing on practical robotics and automation concepts with affordable components.
 
 ---
 
-**Happy Building! 🤖🔥**
+**Happy Building! 🔥🤖💧**
