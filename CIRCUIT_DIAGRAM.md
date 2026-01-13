@@ -29,6 +29,7 @@ Arduino Uno
 -----------
 Digital Pins:
     D3  (PWM) -----> L298N ENB (Right Motor Enable)
+    D4  (PWM) -----> SG90 Servo Motor (Signal - Orange/Yellow wire)
     D5  (PWM) -----> L298N IN1 (Left Motor Forward)
     D6  (PWM) -----> L298N IN2 (Left Motor Backward)
     D7        -----> Relay Module IN (Water Pump Control)
@@ -47,11 +48,13 @@ Power:
     5V        -----> Flame Sensors VCC (x3)
               -----> HC-SR04 VCC
               -----> Relay Module VCC
+              -----> Servo Motor VCC (Red wire)
     
     GND       -----> Flame Sensors GND (x3)
               -----> HC-SR04 GND
               -----> Relay Module GND
               -----> L298N GND
+              -----> Servo Motor GND (Brown wire)
               -----> Battery GND (common ground)
 
 
@@ -92,6 +95,15 @@ HC-SR04 Ultrasonic Sensor
     TRIG      <----- Arduino D12
     ECHO      <----- Arduino D13
     GND       <----- Arduino GND
+
+
+SG90 Micro Servo Motor
+----------------------
+    Orange/Yellow (Signal) <----- Arduino D4 (PWM)
+    Red (VCC)             <----- Arduino 5V
+    Brown (GND)           <----- Arduino GND
+
+Note: Mount ultrasonic sensor on servo horn for scanning capability
 
 
 Relay Module (for Water Pump)
@@ -181,9 +193,10 @@ When D7 is LOW:
 1. Position Arduino at center or rear
 2. Mount L298N motor driver near motors
 3. Install flame sensors at front (spread across width)
-4. Place ultrasonic sensor at front center
-5. Secure water tank on top or side
-6. Mount relay module near pump
+4. Mount servo motor at front center
+5. Attach ultrasonic sensor to servo horn for scanning
+6. Secure water tank on top or side
+7. Mount relay module near pump
 
 ### Step 2: Motor Connections
 1. Connect left motor to L298N OUT1 and OUT2
@@ -197,10 +210,13 @@ When D7 is LOW:
 3. Connect Arduino Vin to battery (through switch recommended)
 4. Verify all GND connections are common
 
-### Step 4: Sensor Connections
+### Step 4: Sensor and Servo Connections
 1. Wire three flame sensors to A0, A1, A2
-2. Connect ultrasonic sensor to D12 (TRIG) and D13 (ECHO)
-3. Ensure all sensors receive 5V and share common GND
+2. Connect servo motor signal (orange/yellow) to D4
+3. Connect servo power (red) to 5V and ground (brown) to GND
+4. Attach ultrasonic sensor to servo horn
+5. Connect ultrasonic sensor to D12 (TRIG) and D13 (ECHO)
+6. Ensure all sensors receive 5V and share common GND
 
 ### Step 5: Motor Driver Connections
 1. Connect control signals D5, D6, D9, D10 to IN1-IN4
@@ -234,7 +250,9 @@ When D7 is LOW:
 - [ ] L298N power LED on
 - [ ] Motors rotate in correct directions
 - [ ] Flame sensors detect fire (test with candle)
+- [ ] Servo motor sweeps left and right smoothly
 - [ ] Ultrasonic sensor reads distance
+- [ ] Ultrasonic sensor mounted on servo horn securely
 - [ ] Relay clicks when activated
 - [ ] Water pump runs when relay activated
 - [ ] No loose connections or shorts
@@ -247,6 +265,8 @@ When D7 is LOW:
 | One motor doesn't work | Motor wiring | Check OUT terminals and motor connections |
 | Motors run but no speed control | Enable pins | Connect D3 and D11, remove L298N jumpers |
 | Flame sensor always detects fire | Sensitivity | Adjust potentiometer on sensor |
+| Servo doesn't move | Power/Signal | Check D4 connection and servo power |
+| Servo jitters | Power supply | Ensure stable 5V, consider external power |
 | Pump doesn't activate | Relay | Check D7 connection and relay wiring |
 | Arduino resets randomly | Power | Ensure adequate current supply |
 

@@ -11,27 +11,28 @@
 | 3 | IR Flame Sensor | KY-026 or equivalent | 3 | ₹150 - ₹300 | ₹50-100 each |
 | 4 | DC Gear Motors | 6V, 100-200 RPM with wheel | 2 | ₹200 - ₹400 | ₹100-200 each |
 | 5 | Ultrasonic Sensor | HC-SR04 | 1 | ₹50 - ₹100 | Distance detection |
-| 6 | Relay Module | 5V, Single Channel | 1 | ₹40 - ₹80 | For pump control |
-| 7 | Water Pump | Mini submersible, 3-6V DC | 1 | ₹100 - ₹200 | ~2L/min flow |
-| 8 | Battery | Li-ion 7.4V 2200mAh or 11.1V | 1 | ₹400 - ₹800 | 2S or 3S pack |
-| 9 | Battery Charger | Compatible with Li-ion | 1 | ₹150 - ₹300 | Balance charger |
-| 10 | Power Switch | SPST, 3A rated | 1 | ₹20 - ₹40 | On/Off control |
+| 6 | SG90 Micro Servo Motor | 9g, 0-180°, 5V | 1 | ₹100 - ₹150 | Sensor scanning |
+| 7 | Relay Module | 5V, Single Channel | 1 | ₹40 - ₹80 | For pump control |
+| 8 | Water Pump | Mini submersible, 3-6V DC | 1 | ₹100 - ₹200 | ~2L/min flow |
+| 9 | Battery | Li-ion 7.4V 2200mAh or 11.1V | 1 | ₹400 - ₹800 | 2S or 3S pack |
+| 10 | Battery Charger | Compatible with Li-ion | 1 | ₹150 - ₹300 | Balance charger |
+| 11 | Power Switch | SPST, 3A rated | 1 | ₹20 - ₹40 | On/Off control |
 
-**Subtotal (Core Electronics): ₹1,660 - ₹3,070**
+**Subtotal (Core Electronics): ₹1,760 - ₹3,220**
 
 ### Mechanical Components
 
 | S.No | Component | Specification | Quantity | Approx. Cost (INR) | Notes |
 |------|-----------|---------------|----------|-------------------|-------|
-| 11 | Robot Chassis | Acrylic or metal, 2-layer | 1 | ₹200 - ₹400 | With mounting holes |
-| 12 | Wheels | 65-70mm diameter | 2 | Included with motors | Usually with motors |
-| 13 | Castor Wheel | Ball bearing, 360° rotation | 1 | ₹30 - ₹60 | Front/rear support |
-| 14 | Water Tank | Plastic bottle or container | 1 | ₹0 - ₹50 | Reuse bottle or buy |
-| 15 | Plastic Tubing | 6mm ID, flexible | 1m | ₹20 - ₹50 | For water delivery |
-| 16 | Pipe/Nozzle | 6mm connector or straw | 1 | ₹10 - ₹30 | Water outlet |
-| 17 | Cable Ties | Various sizes, pack of 100 | 1 pack | ₹50 - ₹100 | Wire management |
-| 18 | Mounting Screws | M3 screws, nuts, spacers | Set | ₹50 - ₹100 | Hardware kit |
-| 19 | Double-sided Tape | Strong adhesive | 1 roll | ₹30 - ₹60 | Component mounting |
+| 12 | Robot Chassis | Acrylic or metal, 2-layer | 1 | ₹200 - ₹400 | With mounting holes |
+| 13 | Wheels | 65-70mm diameter | 2 | Included with motors | Usually with motors |
+| 14 | Castor Wheel | Ball bearing, 360° rotation | 1 | ₹30 - ₹60 | Front/rear support |
+| 15 | Water Tank | Plastic bottle or container | 1 | ₹0 - ₹50 | Reuse bottle or buy |
+| 16 | Plastic Tubing | 6mm ID, flexible | 1m | ₹20 - ₹50 | For water delivery |
+| 17 | Pipe/Nozzle | 6mm connector or straw | 1 | ₹10 - ₹30 | Water outlet |
+| 18 | Cable Ties | Various sizes, pack of 100 | 1 pack | ₹50 - ₹100 | Wire management |
+| 19 | Mounting Screws | M3 screws, nuts, spacers | Set | ₹50 - ₹100 | Hardware kit |
+| 20 | Double-sided Tape | Strong adhesive | 1 roll | ₹30 - ₹60 | Component mounting |
 
 **Subtotal (Mechanical): ₹390 - ₹850**
 
@@ -39,11 +40,11 @@
 
 | S.No | Component | Specification | Quantity | Approx. Cost (INR) | Notes |
 |------|-----------|---------------|----------|-------------------|-------|
-| 20 | Jumper Wires | Male-Male, Female-Female, Male-Female | 40 pcs set | ₹50 - ₹150 | Assorted pack |
-| 21 | Single Core Wire | 22 AWG, various colors | 5m | ₹30 - ₹80 | For permanent connections |
-| 22 | Heat Shrink Tubes | Assorted sizes | 1 pack | ₹40 - ₹80 | Insulation |
-| 23 | Breadboard | 400 tie points (optional) | 1 | ₹50 - ₹100 | For prototyping |
-| 24 | Connectors | JST/Bullet connectors | Set | ₹50 - ₹100 | Battery & motor connections |
+| 21 | Jumper Wires | Male-Male, Female-Female, Male-Female | 40 pcs set | ₹50 - ₹150 | Assorted pack |
+| 22 | Single Core Wire | 22 AWG, various colors | 5m | ₹30 - ₹80 | For permanent connections |
+| 23 | Heat Shrink Tubes | Assorted sizes | 1 pack | ₹40 - ₹80 | Insulation |
+| 24 | Breadboard | 400 tie points (optional) | 1 | ₹50 - ₹100 | For prototyping |
+| 25 | Connectors | JST/Bullet connectors | Set | ₹50 - ₹100 | Battery & motor connections |
 
 **Subtotal (Wiring): ₹220 - ₹510**
 
@@ -51,8 +52,7 @@
 
 | S.No | Component | Specification | Quantity | Approx. Cost (INR) | Notes |
 |------|-----------|---------------|----------|-------------------|-------|
-| 25 | Bluetooth Module | HC-05 or HC-06 | 1 | ₹200 - ₹350 | Remote control |
-| 26 | Servo Motor | SG90, 9g micro servo | 1 | ₹100 - ₹200 | Directional spray |
+| 26 | Bluetooth Module | HC-05 or HC-06 | 1 | ₹200 - ₹350 | Remote control |
 | 27 | Buzzer | 5V active buzzer | 1 | ₹20 - ₹40 | Alert system |
 | 28 | LEDs | 5mm, various colors | 5 | ₹10 - ₹30 | Status indicators |
 | 29 | Temperature Sensor | DHT11 or DS18B20 | 1 | ₹50 - ₹150 | Heat monitoring |
@@ -60,20 +60,20 @@
 | 31 | LCD Display | 16x2 I2C display | 1 | ₹150 - ₹300 | Status display |
 | 32 | Battery Holder | For alternative power | 1 | ₹30 - ₹80 | If not using Li-ion |
 
-**Subtotal (Optional): ₹760 - ₹1,650** (if all added)
+**Subtotal (Optional): ₹660 - ₹1,450** (if all added)
 
 ### Tools & Consumables (One-time investment)
 
 | S.No | Item | Specification | Quantity | Approx. Cost (INR) | Notes |
 |------|------|---------------|----------|-------------------|-------|
-| 33 | Soldering Iron | 25-40W, temperature control | 1 | ₹200 - ₹500 | For permanent connections |
-| 34 | Solder Wire | Lead-free or 60/40 | 1 roll | ₹50 - ₹150 | Electronics grade |
-| 35 | Wire Stripper | Multi-gauge | 1 | ₹100 - ₹300 | Wire preparation |
-| 36 | Screwdriver Set | Phillips & flathead | 1 set | ₹150 - ₹400 | Assembly |
-| 37 | Multimeter | Digital, voltage/current/resistance | 1 | ₹200 - ₹600 | Testing & debugging |
-| 38 | Hot Glue Gun | With glue sticks | 1 | ₹100 - ₹300 | Securing components |
-| 39 | Cutting Pliers | For wire cutting | 1 | ₹80 - ₹200 | Wire work |
-| 40 | Helping Hands | Soldering assistant | 1 | ₹150 - ₹400 | Soldering aid |
+| 34 | Soldering Iron | 25-40W, temperature control | 1 | ₹200 - ₹500 | For permanent connections |
+| 35 | Solder Wire | Lead-free or 60/40 | 1 roll | ₹50 - ₹150 | Electronics grade |
+| 36 | Wire Stripper | Multi-gauge | 1 | ₹100 - ₹300 | Wire preparation |
+| 37 | Screwdriver Set | Phillips & flathead | 1 set | ₹150 - ₹400 | Assembly |
+| 38 | Multimeter | Digital, voltage/current/resistance | 1 | ₹200 - ₹600 | Testing & debugging |
+| 39 | Hot Glue Gun | With glue sticks | 1 | ₹100 - ₹300 | Securing components |
+| 40 | Cutting Pliers | For wire cutting | 1 | ₹80 - ₹200 | Wire work |
+| 41 | Helping Hands | Soldering assistant | 1 | ₹150 - ₹400 | Soldering aid |
 
 **Subtotal (Tools): ₹1,030 - ₹2,850** (one-time)
 
@@ -81,13 +81,13 @@
 
 | Category | Minimum Cost (INR) | Maximum Cost (INR) |
 |----------|-------------------|-------------------|
-| Core Electronics | ₹1,660 | ₹3,070 |
+| Core Electronics | ₹1,760 | ₹3,220 |
 | Mechanical Components | ₹390 | ₹850 |
 | Wiring & Connectors | ₹220 | ₹510 |
-| **Basic Robot Total** | **₹2,270** | **₹4,430** |
-| Optional Upgrades | ₹760 | ₹1,650 |
+| **Basic Robot Total** | **₹2,370** | **₹4,580** |
+| Optional Upgrades | ₹660 | ₹1,450 |
 | Tools (one-time) | ₹1,030 | ₹2,850 |
-| **Complete Setup** | **₹4,060** | **₹8,930** |
+| **Complete Setup** | **₹4,060** | **₹8,880** |
 
 ### Budget Options
 
@@ -193,11 +193,11 @@ Contact wholesalers or distributors directly for best rates.
 
 ## Total Investment Summary
 
-**For a single basic robot**: ₹2,500 - ₹3,500 (without tools)
-**For complete setup with tools**: ₹4,000 - ₹6,000
+**For a single basic robot**: ₹2,500 - ₹3,600 (without tools)
+**For complete setup with tools**: ₹4,000 - ₹6,100
 **For premium build**: ₹6,000 - ₹9,000
 
-**Ideal budget for student project**: ₹3,000 - ₹4,000
+**Ideal budget for student project**: ₹3,000 - ₹4,200
 
 ---
 

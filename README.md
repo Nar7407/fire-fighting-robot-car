@@ -50,7 +50,9 @@ This project is a **fire-fighting robot car** designed to:
 | Arduino UNO (or Nano)           | 1        | 250 – 350       |
 | L298N Motor Driver              | 1        | 150             |
 | DC Gear Motors + Wheels         | 4        | 350 – 500       |
-| Flame Sensor Module             | 1        | 100 – 150       |
+| Flame Sensor Module             | 3        | 150 – 300       |
+| HC-SR04 Ultrasonic Sensor       | 1        | 50 – 100        |
+| SG90 Micro Servo Motor          | 1        | 100 – 150       |
 | Mini DC Water Pump (5–6V)       | 1        | 150 – 250       |
 | Relay Module (or MOSFET)        | 1        | 70 – 100        |
 | Plastic Water Tank (200–300 ml) | 1        | 50              |
@@ -59,7 +61,7 @@ This project is a **fire-fighting robot car** designed to:
 | Battery (18650 or 9V pack)      | 1        | 150 – 250       |
 | Jumper Wires, switch, screws    | —        | 100             |
 
-### **Total Estimated Cost: ₹1,700 – ₹2,200**
+### **Total Estimated Cost: ₹1,900 – ₹2,550**
 
 This fits well within typical **PBL / mini-project budgets**.
 
@@ -126,8 +128,10 @@ This fits well within typical **PBL / mini-project budgets**.
 
 | Component | Arduino Connection |
 |-----------|-------------------|
-| Flame sensor | Analog pin (A0) |
-| L298N Motor Driver | Motor control pins (D2-D6, D9) |
+| Flame sensor (3x) | Analog pins (A0, A1, A2) |
+| HC-SR04 Ultrasonic | D12 (TRIG), D13 (ECHO) |
+| SG90 Servo Motor | D4 (PWM) |
+| L298N Motor Driver | Motor control pins (D3, D5, D6, D9, D10, D11) |
 | Relay Module | Digital pin (D7) |
 | Pump | Relay → Battery |
 
@@ -139,16 +143,21 @@ This fits well within typical **PBL / mini-project budgets**.
 
 ```
 Arduino UNO Connections:
-├── A0 ← Flame Sensor (Signal)
-├── D2 → L298N IN1 (Motor A Direction)
-├── D3 → L298N IN2 (Motor A Direction)
-├── D4 → L298N IN3 (Motor B Direction)
-├── D5 → L298N IN4 (Motor B Direction)
-├── D6 → L298N ENA (Motor A Speed - PWM)
+├── A0 ← Flame Sensor Left (Signal)
+├── A1 ← Flame Sensor Center (Signal)
+├── A2 ← Flame Sensor Right (Signal)
+├── D3 → L298N ENB (Right Motor Enable - PWM)
+├── D4 → SG90 Servo (Orange/Signal wire)
+├── D5 → L298N IN1 (Left Motor Forward)
+├── D6 → L298N IN2 (Left Motor Backward)
 ├── D7 → Relay IN (Water Pump Control)
-├── D9 → L298N ENB (Motor B Speed - PWM)
-├── 5V → Sensor VCC, Relay VCC
-├── GND → Common Ground
+├── D9 → L298N IN3 (Right Motor Forward)
+├── D10 → L298N IN4 (Right Motor Backward)
+├── D11 → L298N ENA (Left Motor Enable - PWM)
+├── D12 → HC-SR04 TRIG
+├── D13 → HC-SR04 ECHO
+├── 5V → Sensors VCC, Relay VCC, Servo Red wire
+├── GND → Common Ground, Servo Brown wire
 └── VIN ← Battery (7-12V)
 
 L298N Motor Driver:

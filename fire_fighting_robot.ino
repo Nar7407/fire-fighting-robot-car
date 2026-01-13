@@ -11,6 +11,8 @@
  * - Emergency stop functionality
  */
 
+#include <Servo.h>
+
 // Motor Driver Pins (L298N)
 #define MOTOR_LEFT_FORWARD 5
 #define MOTOR_LEFT_BACKWARD 6
@@ -31,6 +33,9 @@
 #define TRIG_PIN 12
 #define ECHO_PIN 13
 
+// Servo Pin
+#define SERVO_PIN 4
+
 // Constants
 #define FLAME_THRESHOLD 512    // Analog threshold for flame detection (lower value = flame detected)
 #define SAFE_DISTANCE 20       // Safe distance from obstacles in cm
@@ -50,6 +55,9 @@ enum RobotState {
 RobotState currentState = SEARCHING;
 unsigned long pumpStartTime = 0;
 unsigned long lastDebugTime = 0;  // Track last debug output time
+
+// Servo object
+Servo scanServo;
 
 void setup() {
   // Initialize Serial for debugging
@@ -74,6 +82,10 @@ void setup() {
   // Ultrasonic sensor pins
   pinMode(TRIG_PIN, OUTPUT);
   pinMode(ECHO_PIN, INPUT);
+  
+  // Servo setup
+  scanServo.attach(SERVO_PIN);
+  scanServo.write(90);  // Center position
   
   // Enable motors
   analogWrite(MOTOR_ENABLE_LEFT, MOTOR_SPEED);
@@ -124,6 +136,11 @@ void loop() {
         // Fire directly ahead, check distance
         int distance = getDistance();
         if (distance < SAFE_DISTANCE && distance > 0) {
+          // Obstacle detected - avoid it
+          Serial.println("Obstacle detected while approaching fire!");
+          avoidObstacle();
+        } else if (distance < SAFE_DISTANCE * 2 && distance > 0) {
+          // Close enough to extinguish
           Serial.println("Close enough! Starting extinguishing...");
           stopMotors();
           currentState = EXTINGUISHING;
@@ -210,6 +227,14 @@ void stopMotors() {
 
 // Search pattern - rotate slowly to scan for fire
 void searchForFire() {
+  // Check for obstacles while searching
+  int distance = getDistance();
+  if (distance < SAFE_DISTANCE && distance > 0) {
+    // Obstacle detected during search - avoid it
+    avoidObstacle();
+    return;
+  }
+  
   static unsigned long lastTurnTime = 0;
   static bool turningRight = true;
   
@@ -242,4 +267,38 @@ int getDistance() {
   
   int distance = duration * SOUND_SPEED_CM_US / 2;  // Convert to cm (divide by 2 for round trip)
   return distance;
+}
+
+// Obstacle avoidance with servo scanning
+void avoidObstacle() {
+  stopMotors();
+  delay(300);
+  moveBackward();
+  delay(500);
+  
+  // Scan left (45°)
+  int leftDist = scanDirection(45);
+  
+  // Scan right (135°)
+  int rightDist = scanDirection(135);
+  
+  // Return to center (90°)
+  scanServo.write(90);
+  
+  // Choose better direction
+  if (leftDist > rightDist) {
+    turnLeft();
+    delay(500);
+  } else {
+    turnRight();
+    delay(500);
+  }
+  stopMotors();
+}
+
+// Scan specific direction and return distance
+int scanDirection(int angle) {
+  scanServo.write(angle);
+  delay(300);  // Wait for servo to reach position
+  return getDistance();
 }
