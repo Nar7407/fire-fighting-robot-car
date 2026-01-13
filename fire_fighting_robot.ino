@@ -279,6 +279,7 @@ void avoidObstacle() {
   stopMotors();
   moveBackward();
   delay(BACKUP_DELAY);
+  stopMotors();  // Stop before scanning
   
   // Scan left (45°)
   int leftDist = scanDirection(45);
