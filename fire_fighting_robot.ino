@@ -112,8 +112,11 @@ void setup() {
 void loop() {
   // Check for Bluetooth commands
   if (Serial.available() > 0) {
-    char cmd = Serial.read();
-    processBluetoothCommand(cmd);
+    int cmdInt = Serial.read();
+    if (cmdInt != -1) {  // Defensive check
+      char cmd = (char)cmdInt;
+      processBluetoothCommand(cmd);
+    }
   }
   
   // Run autonomous mode if enabled
@@ -224,7 +227,7 @@ void processBluetoothCommand(char cmd) {
     case 'W':  // Activate Water Pump
       Serial.println("💧 Activating Water Pump for 2 seconds...");
       digitalWrite(WATER_PUMP, HIGH);
-      delay(2000);
+      delay(2000);  // Blocking delay - intentional for manual water pump control
       digitalWrite(WATER_PUMP, LOW);
       Serial.println("💧 Water Pump Deactivated");
       break;
