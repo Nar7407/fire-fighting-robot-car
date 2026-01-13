@@ -47,6 +47,7 @@
 #define SERVO_DELAY 300        // Delay for servo positioning in milliseconds
 #define BACKUP_DELAY 500       // Delay for backing up in milliseconds
 #define TURN_DELAY 500         // Delay for turning in milliseconds
+#define MOTOR_DIRECTION_CHANGE_DELAY 100  // Small delay when changing motor direction
 
 // States
 enum RobotState {
@@ -139,11 +140,11 @@ void loop() {
       if (fireDetectedCenter) {
         // Fire directly ahead, check distance
         int distance = getDistance();
-        if (distance < SAFE_DISTANCE && distance > 0) {
+        if (isValidDistance(distance) && distance < SAFE_DISTANCE) {
           // Obstacle too close - avoid it
           Serial.println("Obstacle detected while approaching fire!");
           avoidObstacle();
-        } else if (distance >= SAFE_DISTANCE && distance < EXTINGUISHING_DISTANCE && distance > 0) {
+        } else if (isValidDistance(distance) && distance >= SAFE_DISTANCE && distance < EXTINGUISHING_DISTANCE) {
           // Close enough to extinguish (between 20cm and 40cm)
           Serial.println("Close enough! Starting extinguishing...");
           stopMotors();
@@ -234,7 +235,7 @@ void stopMotors() {
 void searchForFire() {
   // Check for obstacles while searching
   int distance = getDistance();
-  if (distance < SAFE_DISTANCE && distance > 0) {
+  if (isValidDistance(distance) && distance < SAFE_DISTANCE) {
     // Obstacle detected during search - avoid it
     avoidObstacle();
     return;
@@ -274,9 +275,15 @@ int getDistance() {
   return distance;
 }
 
+// Check if distance reading is valid
+bool isValidDistance(int distance) {
+  return distance > 0;
+}
+
 // Obstacle avoidance with servo scanning
 void avoidObstacle() {
   stopMotors();
+  delay(MOTOR_DIRECTION_CHANGE_DELAY);  // Small delay before changing direction
   moveBackward();
   delay(BACKUP_DELAY);
   stopMotors();  // Stop before scanning
@@ -291,9 +298,12 @@ void avoidObstacle() {
   scanServo.write(90);
   delay(SERVO_DELAY);  // Wait for servo to reach center position
   
-  // Choose better direction (handle invalid readings)
-  if (leftDist > 0 && rightDist > 0) {
-    // Both readings valid - choose better direction
+  // Choose better direction with safety check
+  bool leftIsSafe = isValidDistance(leftDist) && leftDist >= SAFE_DISTANCE;
+  bool rightIsSafe = isValidDistance(rightDist) && rightDist >= SAFE_DISTANCE;
+  
+  if (leftIsSafe && rightIsSafe) {
+    // Both directions safe - choose the one with more clearance
     if (leftDist > rightDist) {
       turnLeft();
       delay(TURN_DELAY);
@@ -301,16 +311,16 @@ void avoidObstacle() {
       turnRight();
       delay(TURN_DELAY);
     }
-  } else if (leftDist > 0) {
-    // Only left reading valid
+  } else if (leftIsSafe) {
+    // Only left is safe
     turnLeft();
     delay(TURN_DELAY);
-  } else if (rightDist > 0) {
-    // Only right reading valid
+  } else if (rightIsSafe) {
+    // Only right is safe
     turnRight();
     delay(TURN_DELAY);
   } else {
-    // Both readings invalid - default turn right
+    // Neither direction is clearly safe - turn right as default
     turnRight();
     delay(TURN_DELAY);
   }
