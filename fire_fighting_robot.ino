@@ -39,7 +39,7 @@
 // Constants
 #define FLAME_THRESHOLD 512    // Analog threshold for flame detection (lower value = flame detected)
 #define SAFE_DISTANCE 20       // Safe distance from obstacles in cm
-#define EXTINGUISHING_DISTANCE 40  // Distance to start extinguishing (SAFE_DISTANCE * 2)
+#define EXTINGUISHING_DISTANCE (SAFE_DISTANCE * 2)  // Distance to start extinguishing
 #define MOTOR_SPEED 200        // PWM value for motor speed (0-255)
 #define PUMP_DURATION 3000     // Time to run pump in milliseconds
 #define SOUND_SPEED_CM_US 0.034  // Speed of sound in cm/microsecond
@@ -277,7 +277,6 @@ int getDistance() {
 // Obstacle avoidance with servo scanning
 void avoidObstacle() {
   stopMotors();
-  delay(SERVO_DELAY);
   moveBackward();
   delay(BACKUP_DELAY);
   
