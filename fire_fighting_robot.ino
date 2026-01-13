@@ -44,6 +44,9 @@
 #define PUMP_DURATION 3000     // Time to run pump in milliseconds
 #define SOUND_SPEED_CM_US 0.034  // Speed of sound in cm/microsecond
 #define DEBUG_INTERVAL 1000    // Debug output interval in milliseconds
+#define SERVO_DELAY 300        // Delay for servo positioning in milliseconds
+#define BACKUP_DELAY 500       // Delay for backing up in milliseconds
+#define TURN_DELAY 500         // Delay for turning in milliseconds
 
 // States
 enum RobotState {
@@ -137,17 +140,18 @@ void loop() {
         // Fire directly ahead, check distance
         int distance = getDistance();
         if (distance < SAFE_DISTANCE && distance > 0) {
-          // Obstacle detected - avoid it
+          // Obstacle too close - avoid it
           Serial.println("Obstacle detected while approaching fire!");
           avoidObstacle();
-        } else if (distance < EXTINGUISHING_DISTANCE && distance > 0) {
-          // Close enough to extinguish
+        } else if (distance >= SAFE_DISTANCE && distance < EXTINGUISHING_DISTANCE && distance > 0) {
+          // Close enough to extinguish (between 20cm and 40cm)
           Serial.println("Close enough! Starting extinguishing...");
           stopMotors();
           currentState = EXTINGUISHING;
           pumpStartTime = millis();
           digitalWrite(WATER_PUMP, HIGH);
         } else {
+          // Fire far away - keep moving forward
           moveForward();
         }
       } else if (fireDetectedLeft) {
@@ -273,9 +277,9 @@ int getDistance() {
 // Obstacle avoidance with servo scanning
 void avoidObstacle() {
   stopMotors();
-  delay(300);
+  delay(SERVO_DELAY);
   moveBackward();
-  delay(500);
+  delay(BACKUP_DELAY);
   
   // Scan left (45°)
   int leftDist = scanDirection(45);
@@ -285,30 +289,30 @@ void avoidObstacle() {
   
   // Return to center (90°)
   scanServo.write(90);
-  delay(300);  // Wait for servo to reach center position
+  delay(SERVO_DELAY);  // Wait for servo to reach center position
   
   // Choose better direction (handle invalid readings)
   if (leftDist > 0 && rightDist > 0) {
     // Both readings valid - choose better direction
     if (leftDist > rightDist) {
       turnLeft();
-      delay(500);
+      delay(TURN_DELAY);
     } else {
       turnRight();
-      delay(500);
+      delay(TURN_DELAY);
     }
   } else if (leftDist > 0) {
     // Only left reading valid
     turnLeft();
-    delay(500);
+    delay(TURN_DELAY);
   } else if (rightDist > 0) {
     // Only right reading valid
     turnRight();
-    delay(500);
+    delay(TURN_DELAY);
   } else {
     // Both readings invalid - default turn right
     turnRight();
-    delay(500);
+    delay(TURN_DELAY);
   }
   stopMotors();
 }
@@ -316,6 +320,6 @@ void avoidObstacle() {
 // Scan specific direction and return distance
 int scanDirection(int angle) {
   scanServo.write(angle);
-  delay(300);  // Wait for servo to reach position
+  delay(SERVO_DELAY);  // Wait for servo to reach position
   return getDistance();
 }
