@@ -39,6 +39,7 @@
 // Constants
 #define FLAME_THRESHOLD 512    // Analog threshold for flame detection (lower value = flame detected)
 #define SAFE_DISTANCE 20       // Safe distance from obstacles in cm
+#define EXTINGUISHING_DISTANCE 40  // Distance to start extinguishing (SAFE_DISTANCE * 2)
 #define MOTOR_SPEED 200        // PWM value for motor speed (0-255)
 #define PUMP_DURATION 3000     // Time to run pump in milliseconds
 #define SOUND_SPEED_CM_US 0.034  // Speed of sound in cm/microsecond
@@ -139,7 +140,7 @@ void loop() {
           // Obstacle detected - avoid it
           Serial.println("Obstacle detected while approaching fire!");
           avoidObstacle();
-        } else if (distance < SAFE_DISTANCE * 2 && distance > 0) {
+        } else if (distance < EXTINGUISHING_DISTANCE && distance > 0) {
           // Close enough to extinguish
           Serial.println("Close enough! Starting extinguishing...");
           stopMotors();
@@ -284,12 +285,28 @@ void avoidObstacle() {
   
   // Return to center (90°)
   scanServo.write(90);
+  delay(300);  // Wait for servo to reach center position
   
-  // Choose better direction
-  if (leftDist > rightDist) {
+  // Choose better direction (handle invalid readings)
+  if (leftDist > 0 && rightDist > 0) {
+    // Both readings valid - choose better direction
+    if (leftDist > rightDist) {
+      turnLeft();
+      delay(500);
+    } else {
+      turnRight();
+      delay(500);
+    }
+  } else if (leftDist > 0) {
+    // Only left reading valid
     turnLeft();
     delay(500);
+  } else if (rightDist > 0) {
+    // Only right reading valid
+    turnRight();
+    delay(500);
   } else {
+    // Both readings invalid - default turn right
     turnRight();
     delay(500);
   }
