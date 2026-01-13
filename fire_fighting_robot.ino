@@ -9,6 +9,15 @@
  * - Flame detection using IR flame sensors
  * - Automatic water pump activation
  * - Emergency stop functionality
+ * - Bluetooth remote control (HC-05/HC-06)
+ * - Dual mode operation (Manual/Autonomous)
+ * 
+ * Bluetooth Module Wiring:
+ * HC-05/HC-06 → Arduino
+ * VCC → 5V
+ * GND → GND
+ * TXD → RX (Pin 0)
+ * RXD → TX (Pin 1)
  */
 
 // Motor Driver Pins (L298N)
@@ -44,17 +53,20 @@ enum RobotState {
   SEARCHING,
   APPROACHING_FIRE,
   EXTINGUISHING,
-  STOPPED
+  STOPPED,
+  MANUAL_CONTROL
 };
 
 RobotState currentState = SEARCHING;
 unsigned long pumpStartTime = 0;
 unsigned long lastDebugTime = 0;  // Track last debug output time
+bool autonomousMode = true;  // Default to autonomous mode
 
 void setup() {
   // Initialize Serial for debugging
   Serial.begin(9600);
-  Serial.println("Fire-Fighting Robot Initializing...");
+  Serial.println("🤖 Fire-Fighting Robot Initializing...");
+  Serial.println("========================================");
   
   // Motor pins
   pinMode(MOTOR_LEFT_FORWARD, OUTPUT);
@@ -79,11 +91,236 @@ void setup() {
   analogWrite(MOTOR_ENABLE_LEFT, MOTOR_SPEED);
   analogWrite(MOTOR_ENABLE_RIGHT, MOTOR_SPEED);
   
-  Serial.println("Robot Ready!");
+  Serial.println("✅ Robot Ready!");
+  Serial.println("========================================");
+  Serial.println("📱 Bluetooth Command Reference:");
+  Serial.println("  F - Move Forward");
+  Serial.println("  B - Move Backward");
+  Serial.println("  L - Turn Left");
+  Serial.println("  R - Turn Right");
+  Serial.println("  S - Stop Motors");
+  Serial.println("  W - Activate Water Pump (2s)");
+  Serial.println("  A - Enable Autonomous Mode");
+  Serial.println("  M - Enable Manual Mode");
+  Serial.println("  I - Get Status Information");
+  Serial.println("========================================");
+  Serial.println("🔥 Starting in AUTONOMOUS mode");
+  Serial.println("========================================");
   delay(2000);
 }
 
 void loop() {
+  // Check for Bluetooth commands
+  if (Serial.available() > 0) {
+    int cmdInt = Serial.read();
+    if (cmdInt != -1) {  // Defensive check
+      char cmd = (char)cmdInt;
+      processBluetoothCommand(cmd);
+    }
+  }
+  
+  // Run autonomous mode if enabled
+  if (autonomousMode) {
+    runAutonomousMode();
+  }
+  
+  delay(100);  // Small delay for stability
+}
+
+// Movement Functions
+void moveForward() {
+  digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
+  digitalWrite(MOTOR_LEFT_BACKWARD, LOW);
+  digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
+  digitalWrite(MOTOR_RIGHT_BACKWARD, LOW);
+}
+
+void moveBackward() {
+  digitalWrite(MOTOR_LEFT_FORWARD, LOW);
+  digitalWrite(MOTOR_LEFT_BACKWARD, HIGH);
+  digitalWrite(MOTOR_RIGHT_FORWARD, LOW);
+  digitalWrite(MOTOR_RIGHT_BACKWARD, HIGH);
+}
+
+void turnLeft() {
+  digitalWrite(MOTOR_LEFT_FORWARD, LOW);
+  digitalWrite(MOTOR_LEFT_BACKWARD, HIGH);
+  digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
+  digitalWrite(MOTOR_RIGHT_BACKWARD, LOW);
+}
+
+void turnRight() {
+  digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
+  digitalWrite(MOTOR_LEFT_BACKWARD, LOW);
+  digitalWrite(MOTOR_RIGHT_FORWARD, LOW);
+  digitalWrite(MOTOR_RIGHT_BACKWARD, HIGH);
+}
+
+void stopMotors() {
+  digitalWrite(MOTOR_LEFT_FORWARD, LOW);
+  digitalWrite(MOTOR_LEFT_BACKWARD, LOW);
+  digitalWrite(MOTOR_RIGHT_FORWARD, LOW);
+  digitalWrite(MOTOR_RIGHT_BACKWARD, LOW);
+}
+
+// Search pattern - rotate slowly to scan for fire
+void searchForFire() {
+  static unsigned long lastTurnTime = 0;
+  static bool turningRight = true;
+  
+  if (millis() - lastTurnTime > 500) {  // Change direction every 500ms
+    turningRight = !turningRight;
+    lastTurnTime = millis();
+  }
+  
+  if (turningRight) {
+    turnRight();
+  } else {
+    turnLeft();
+  }
+}
+
+// Process Bluetooth commands
+void processBluetoothCommand(char cmd) {
+  // Convert to uppercase for case-insensitive processing
+  cmd = toupper(cmd);
+  
+  Serial.print("📱 Command received: ");
+  Serial.println(cmd);
+  
+  switch (cmd) {
+    case 'F':  // Move Forward
+      autonomousMode = false;
+      currentState = MANUAL_CONTROL;
+      moveForward();
+      Serial.println("⬆️  Moving Forward");
+      break;
+      
+    case 'B':  // Move Backward
+      autonomousMode = false;
+      currentState = MANUAL_CONTROL;
+      moveBackward();
+      Serial.println("⬇️  Moving Backward");
+      break;
+      
+    case 'L':  // Turn Left
+      autonomousMode = false;
+      currentState = MANUAL_CONTROL;
+      turnLeft();
+      Serial.println("⬅️  Turning Left");
+      break;
+      
+    case 'R':  // Turn Right
+      autonomousMode = false;
+      currentState = MANUAL_CONTROL;
+      turnRight();
+      Serial.println("➡️  Turning Right");
+      break;
+      
+    case 'S':  // Stop Motors
+      autonomousMode = false;
+      currentState = MANUAL_CONTROL;
+      stopMotors();
+      Serial.println("🛑 Motors Stopped");
+      break;
+      
+    case 'W':  // Activate Water Pump
+      Serial.println("💧 Activating Water Pump for 2 seconds...");
+      digitalWrite(WATER_PUMP, HIGH);
+      delay(2000);  // Blocking delay - intentional for manual water pump control
+      digitalWrite(WATER_PUMP, LOW);
+      Serial.println("💧 Water Pump Deactivated");
+      break;
+      
+    case 'A':  // Enable Autonomous Mode
+      autonomousMode = true;
+      currentState = SEARCHING;
+      stopMotors();
+      Serial.println("========================================");
+      Serial.println("🔥 AUTONOMOUS MODE ENABLED");
+      Serial.println("   Robot will now search for fires");
+      Serial.println("========================================");
+      break;
+      
+    case 'M':  // Enable Manual Mode
+      autonomousMode = false;
+      currentState = MANUAL_CONTROL;
+      stopMotors();
+      digitalWrite(WATER_PUMP, LOW);
+      Serial.println("========================================");
+      Serial.println("🎮 MANUAL MODE ENABLED");
+      Serial.println("   Waiting for commands...");
+      Serial.println("========================================");
+      break;
+      
+    case 'I':  // Get Status Information
+      printStatus();
+      break;
+      
+    default:
+      Serial.print("❓ Unknown command: ");
+      Serial.println(cmd);
+      break;
+  }
+}
+
+// Print robot status information
+void printStatus() {
+  Serial.println("========================================");
+  Serial.println("📊 ROBOT STATUS INFORMATION");
+  Serial.println("========================================");
+  
+  // Mode
+  Serial.print("Mode: ");
+  Serial.println(autonomousMode ? "🔥 AUTONOMOUS" : "🎮 MANUAL");
+  
+  // State
+  Serial.print("State: ");
+  switch (currentState) {
+    case SEARCHING:
+      Serial.println("🔍 SEARCHING");
+      break;
+    case APPROACHING_FIRE:
+      Serial.println("🚗 APPROACHING FIRE");
+      break;
+    case EXTINGUISHING:
+      Serial.println("💧 EXTINGUISHING");
+      break;
+    case STOPPED:
+      Serial.println("🛑 STOPPED");
+      break;
+    case MANUAL_CONTROL:
+      Serial.println("🎮 MANUAL CONTROL");
+      break;
+  }
+  
+  // Sensor readings
+  int flameLeft = analogRead(FLAME_SENSOR_LEFT);
+  int flameCenter = analogRead(FLAME_SENSOR_CENTER);
+  int flameRight = analogRead(FLAME_SENSOR_RIGHT);
+  
+  Serial.println("Flame Sensors:");
+  Serial.print("  Left: ");
+  Serial.print(flameLeft);
+  Serial.println(flameLeft < FLAME_THRESHOLD ? " 🔥" : " ✓");
+  Serial.print("  Center: ");
+  Serial.print(flameCenter);
+  Serial.println(flameCenter < FLAME_THRESHOLD ? " 🔥" : " ✓");
+  Serial.print("  Right: ");
+  Serial.print(flameRight);
+  Serial.println(flameRight < FLAME_THRESHOLD ? " 🔥" : " ✓");
+  
+  // Distance
+  int distance = getDistance();
+  Serial.print("Distance: ");
+  Serial.print(distance);
+  Serial.println(" cm");
+  
+  Serial.println("========================================");
+}
+
+// Autonomous mode operation
+void runAutonomousMode() {
   // Read flame sensors
   int flameLeft = analogRead(FLAME_SENSOR_LEFT);
   int flameCenter = analogRead(FLAME_SENSOR_CENTER);
@@ -167,61 +404,10 @@ void loop() {
       stopMotors();
       digitalWrite(WATER_PUMP, LOW);
       break;
-  }
-  
-  delay(100);  // Small delay for stability
-}
-
-// Movement Functions
-void moveForward() {
-  digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
-  digitalWrite(MOTOR_LEFT_BACKWARD, LOW);
-  digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
-  digitalWrite(MOTOR_RIGHT_BACKWARD, LOW);
-}
-
-void moveBackward() {
-  digitalWrite(MOTOR_LEFT_FORWARD, LOW);
-  digitalWrite(MOTOR_LEFT_BACKWARD, HIGH);
-  digitalWrite(MOTOR_RIGHT_FORWARD, LOW);
-  digitalWrite(MOTOR_RIGHT_BACKWARD, HIGH);
-}
-
-void turnLeft() {
-  digitalWrite(MOTOR_LEFT_FORWARD, LOW);
-  digitalWrite(MOTOR_LEFT_BACKWARD, HIGH);
-  digitalWrite(MOTOR_RIGHT_FORWARD, HIGH);
-  digitalWrite(MOTOR_RIGHT_BACKWARD, LOW);
-}
-
-void turnRight() {
-  digitalWrite(MOTOR_LEFT_FORWARD, HIGH);
-  digitalWrite(MOTOR_LEFT_BACKWARD, LOW);
-  digitalWrite(MOTOR_RIGHT_FORWARD, LOW);
-  digitalWrite(MOTOR_RIGHT_BACKWARD, HIGH);
-}
-
-void stopMotors() {
-  digitalWrite(MOTOR_LEFT_FORWARD, LOW);
-  digitalWrite(MOTOR_LEFT_BACKWARD, LOW);
-  digitalWrite(MOTOR_RIGHT_FORWARD, LOW);
-  digitalWrite(MOTOR_RIGHT_BACKWARD, LOW);
-}
-
-// Search pattern - rotate slowly to scan for fire
-void searchForFire() {
-  static unsigned long lastTurnTime = 0;
-  static bool turningRight = true;
-  
-  if (millis() - lastTurnTime > 500) {  // Change direction every 500ms
-    turningRight = !turningRight;
-    lastTurnTime = millis();
-  }
-  
-  if (turningRight) {
-    turnRight();
-  } else {
-    turnLeft();
+      
+    case MANUAL_CONTROL:
+      // In manual mode, do nothing (controlled by commands)
+      break;
   }
 }
 
